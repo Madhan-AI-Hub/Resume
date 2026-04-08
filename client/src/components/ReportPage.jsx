@@ -122,10 +122,10 @@ const ReportPage = () => {
         </div>
 
         {/* Score & Verdict */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <Card className="lg:col-span-1 p-8 flex flex-col items-center justify-center relative overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+          <Card className="lg:col-span-1 p-6 md:p-8 flex flex-col items-center justify-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 dark:bg-blue-900/10 rounded-full blur-3xl -mr-16 -mt-16" />
-            <div className="relative w-48 h-48 mb-6">
+            <div className="relative w-40 h-40 md:w-48 md:h-48 mb-6">
               <svg className="w-full h-full transform -rotate-90">
                 <circle cx="96" cy="96" r="88" strokeWidth="12" stroke="currentColor" fill="transparent" className="text-slate-100 dark:text-slate-800" />
                 <circle 
@@ -180,35 +180,38 @@ const ReportPage = () => {
           </div>
         </div>
 
-        {/* NLP Methodology Section - NEW REQUEST */}
-        <Card className="p-8 border-blue-100 dark:border-blue-900/30 bg-gradient-to-br from-white to-blue-50/30 dark:from-slate-900 dark:to-blue-950/20">
-          <SectionHeader title="Analysis Methodology" icon={<Brain className="w-5 h-5" />} />
+        {/* Intelligence Methodology Section */}
+        <Card className="p-8 border-blue-100 dark:border-blue-900/30 bg-gradient-to-br from-white to-blue-50/50 dark:from-slate-900 dark:to-blue-950/20 relative">
+          <div className="absolute top-4 right-8 px-3 py-1 bg-blue-600 text-[10px] font-black text-white rounded-full uppercase tracking-tighter">
+            NLP Engine v2.0
+          </div>
+          <SectionHeader title="The Intelligence Behind Your Score" icon={<Brain className="w-5 h-5" />} />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-blue-600 rounded text-white"><Search className="w-3 h-3" /></div>
-                <h4 className="font-bold text-sm">Parsing & Normalization</h4>
+                <div className="p-1.5 bg-blue-600/10 text-blue-600 rounded-lg"><Search className="w-4 h-4" /></div>
+                <h4 className="font-bold text-sm text-slate-900 dark:text-white">Semantic Parsing</h4>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Utilizing deterministic regex patterns and structural heuristics to convert heterogeneous document formats (PDF/DOCX) into normalized semantic buffers.
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                We use deterministic regex patterns to convert PDFs and Word docs into normalized semantic buffers, ensuring no crucial keyword is left behind during extraction.
               </p>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-blue-600 rounded text-white"><Brain className="w-3 h-3" /></div>
-                <h4 className="font-bold text-sm">Natural Language Processing</h4>
+                <div className="p-1.5 bg-blue-600/10 text-blue-600 rounded-lg"><Zap className="w-4 h-4" /></div>
+                <h4 className="font-bold text-sm text-slate-900 dark:text-white">Natural Language Processing</h4>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Applying TF-IDF vectorization and Tokenization (via the Natural library) to identify core technical entities and categorical experience clusters.
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                Leveraging the **Natural NLP Library**, we perform tokenization and categorical clustering to identify the underlying technical intent of your experience.
               </p>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-blue-600 rounded text-white"><Zap className="w-3 h-3" /></div>
-                <h4 className="font-bold text-sm">Cosine Similarity Match</h4>
+                <div className="p-1.5 bg-blue-600/10 text-blue-600 rounded-lg"><Target className="w-4 h-4" /></div>
+                <h4 className="font-bold text-sm text-slate-900 dark:text-white">Cosine Similarity Model</h4>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Calculating the angular distance between Vector A (Resume) and Vector B (Job Description) in an N-dimensional space to determine objective alignment.
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                Your score is calculated using an N-dimensional vector space model. We measure the "Angular Distance" between your resume and the JD to ensure objective accuracy.
               </p>
             </div>
           </div>
@@ -239,9 +242,9 @@ const ReportPage = () => {
             </div>
           </Card>
 
-          <Card className="p-8">
+          <Card className="p-6 md:p-8">
             <SectionHeader title="Metric Breakdown" icon={<Target className="w-5 h-5" />} />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {(data.breakdown || []).map(item => (
                 <div key={item.name} className="p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl border border-slate-100 dark:border-slate-800/50">
                   <div className="flex justify-between items-center mb-2">
@@ -275,7 +278,7 @@ const ReportPage = () => {
                   </div>
                   <div className="flex-1 pb-8">
                     <h4 className="text-lg font-black text-slate-900 dark:text-white mb-2">{item.skill}</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                       <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-xl">
                         <span className="text-[10px] font-black uppercase text-blue-600 block mb-2">Core Topics</span>
                         <div className="flex flex-wrap gap-2">
