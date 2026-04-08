@@ -1,207 +1,124 @@
 import React from 'react';
-import { Box, Button, Container, Typography, Stack, Step, StepLabel, Stepper, Card, CardContent, useTheme } from '@mui/material';
-import { Grid } from '@mui/material';
-import { motion } from 'framer-motion';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
-import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import TimelineIcon from '@mui/icons-material/Timeline';
-import DescriptionIcon from '@mui/icons-material/Description';
 import { useNavigate } from 'react-router-dom';
-import Navbar from './Navbar';
-
-const MotionContainer = motion(Container);
-const MotionBox = motion(Box);
-const MotionTypography = motion(Typography);
-
-const HeroSection = () => {
-    const navigate = useNavigate();
-    const theme = useTheme();
-
-    return (
-        <Box
-            sx={{
-                background: `linear-gradient(180deg, ${theme.palette.background.default} 0%, ${theme.palette.primary.dark} 100%)`,
-                pt: 15,
-                pb: 10,
-                overflow: 'hidden',
-                position: 'relative',
-            }}
-        >
-            <Container maxWidth="lg">
-                <Grid container spacing={4} alignItems="center">
-                    <Grid size={{ xs: 12, md: 8 }} sx={{ textAlign: { xs: 'center', md: 'left' } }}>
-                        <MotionTypography
-                            variant="h1"
-                            gutterBottom
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8 }}
-                            sx={{
-                                fontSize: { xs: '2.5rem', md: '4rem' },
-                                fontWeight: 800,
-                                background: `-webkit-linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                            }}
-                        >
-                            Upload Resume. Match with Job. <br /> Close Your Skill Gaps.
-                        </MotionTypography>
-                        <MotionTypography
-                            variant="h5"
-                            color="text.secondary"
-                            paragraph
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            sx={{ mb: 4, maxWidth: 600, mx: { xs: 'auto', md: 0 } }}
-                        >
-                            Get actionable feedback, tailored learning roadmaps, and an ATS-friendly analysis to help you land your dream job.
-                        </MotionTypography>
-                        <MotionBox
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.4 }}
-                        >
-                            <Button
-                                variant="contained"
-                                size="large"
-                                onClick={() => navigate('/upload')}
-                                sx={{
-                                    px: 4,
-                                    py: 1.5,
-                                    fontSize: '1.2rem',
-                                }}
-                            >
-                                Analyze Resume
-                            </Button>
-                        </MotionBox>
-                    </Grid>
-                    {/* Abstract Visual/Illustration would go here in Grid item md={4} */}
-                </Grid>
-            </Container>
-        </Box>
-    );
-};
-
-const HowItWorks = () => {
-    const theme = useTheme();
-    const steps = [
-        { label: 'Upload', description: 'Upload your Resume & Job Description', icon: <UploadFileIcon fontSize="large" /> },
-        { label: 'Analyze', description: 'AI scans for missing skills & matches', icon: <AnalyticsIcon fontSize="large" /> },
-        { label: 'Improve', description: 'Get a roadmap to close the gaps', icon: <AutoFixHighIcon fontSize="large" /> },
-    ];
-
-    return (
-        <Box sx={{ py: 10, bgcolor: 'background.paper' }}>
-            <Container maxWidth="lg">
-                <Typography variant="h2" align="center" gutterBottom sx={{ mb: 6 }}>
-                    How It Works
-                </Typography>
-                <Grid container spacing={4} justifyContent="center">
-                    {steps.map((step, index) => (
-                        <Grid size={{ xs: 12, md: 4 }} key={index}>
-                            <MotionBox
-                                whileHover={{ y: -10 }}
-                                transition={{ type: 'spring', stiffness: 300 }}
-                            >
-                                <Card sx={{ height: '100%', textAlign: 'center', py: 4, borderRadius: 4 }}>
-                                    <CardContent>
-                                        <Box sx={{
-                                            display: 'inline-flex',
-                                            p: 2,
-                                            borderRadius: '50%',
-                                            bgcolor: 'rgba(99, 102, 241, 0.1)',
-                                            color: 'primary.main',
-                                            mb: 2
-                                        }}>
-                                            {step.icon}
-                                        </Box>
-                                        <Typography variant="h5" gutterBottom fontWeight="bold">
-                                            {step.label}
-                                        </Typography>
-                                        <Typography variant="body1" color="text.secondary">
-                                            {step.description}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </MotionBox>
-                        </Grid>
-                    ))}
-                </Grid>
-            </Container>
-        </Box>
-    );
-};
-
-const Features = () => {
-    const features = [
-        { title: 'Skill Gap Detection', desc: 'Identify exactly what skills you are missing for the job.', icon: <CheckCircleIcon color="success" /> },
-        { title: 'Learning Roadmap', desc: 'Step-by-step guide to learn missing skills.', icon: <TimelineIcon color="primary" /> },
-        { title: 'Resume Suggestions', desc: 'Actionable tips to improve your resume wording.', icon: <DescriptionIcon color="secondary" /> },
-        { title: 'ATS Analysis', desc: 'Ensure your resume passes Applicant Tracking Systems.', icon: <AnalyticsIcon color="info" /> },
-    ];
-
-    return (
-        <Box sx={{ py: 10 }}>
-            <Container maxWidth="lg">
-                <Typography variant="h2" align="center" gutterBottom sx={{ mb: 6 }}>
-                    Features
-                </Typography>
-                <Grid container spacing={4}>
-                    {features.map((feature, index) => (
-                        <Grid size={{ xs: 12, sm: 6 }} key={index}>
-                            <MotionBox
-                                whileHover={{ scale: 1.02 }}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                            >
-                                <Card sx={{ display: 'flex', p: 2, borderRadius: 3, alignItems: 'center' }}>
-                                    <Box sx={{ mr: 2 }}>{feature.icon}</Box>
-                                    <CardContent sx={{ flex: '1 0 auto', p: '0 !important' }}>
-                                        <Typography variant="h6" fontWeight="bold">
-                                            {feature.title}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            {feature.desc}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </MotionBox>
-                        </Grid>
-                    ))}
-                </Grid>
-            </Container>
-        </Box>
-    );
-};
+import { Zap, Shield, Target, ArrowRight, BarChart2, Users, CheckCircle } from 'lucide-react';
 
 const LandingPage = () => {
-    return (
-        <Box>
-            <Navbar />
-            <HeroSection />
-            <HowItWorks />
-            <Features />
-            {/* Final CTA */}
-            <Box sx={{ py: 10, textAlign: 'center', bgcolor: 'primary.dark' }}>
-                <Container maxWidth="sm">
-                    <Typography variant="h3" gutterBottom>
-                        Ready to Land Your Dream Job?
-                    </Typography>
-                    <Typography variant="h6" sx={{ mb: 4, opacity: 0.8 }}>
-                        Join thousands of job seekers optimizing their potential.
-                    </Typography>
-                    <Button variant="contained" color="secondary" size="large" href="/upload" sx={{ px: 5, py: 1.5, fontSize: '1.1rem', bgcolor: 'white', color: 'primary.dark', '&:hover': { bgcolor: 'grey.100' } }}>
-                        Start Analysis Now
-                    </Button>
-                </Container>
-            </Box>
-        </Box>
-    );
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-500 overflow-hidden font-['Inter']">
+      
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-4">
+        {/* Background Gradients */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none opacity-20 dark:opacity-30">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-blue-600 rounded-full blur-[120px]" />
+          <div className="absolute top-1/2 right-0 w-80 h-80 bg-purple-600 rounded-full blur-[120px]" />
+        </div>
+
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 text-blue-600 dark:text-blue-400 text-xs font-black tracking-widest uppercase mb-6 animate-fade-in">
+            <Zap className="w-4 h-4" />
+            <span>Next-Gen Career Intelligence</span>
+          </div>
+          
+          <h1 className="text-5xl md:text-8xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.9] mb-8">
+            Stop Guessing. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Start Landing.</span>
+          </h1>
+
+          <p className="max-w-2xl mx-auto text-slate-600 dark:text-slate-400 text-lg md:text-xl leading-relaxed mb-10">
+            Smart Resume Skill Gap Analyzer uses advanced AI to bridge the gap between your profile and your dream job. Detailed scores, keyword analysis, and personalized roadmaps.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button 
+              onClick={() => navigate('/upload')}
+              className="group px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl shadow-xl shadow-blue-500/20 flex items-center gap-3 transition-all hover:scale-105 active:scale-95"
+            >
+              Get Started for Free
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <button className="px-8 py-4 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 font-bold rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+              Watch Demo
+            </button>
+          </div>
+
+          {/* Social Proof */}
+          <div className="mt-16 flex flex-wrap justify-center items-center gap-8 opacity-40 grayscale dark:invert">
+            <span className="text-xl font-black uppercase">Google</span>
+            <span className="text-xl font-black uppercase">Meta</span>
+            <span className="text-xl font-black uppercase">Airbnb</span>
+            <span className="text-xl font-black uppercase">Stripe</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section className="py-24 px-4 bg-slate-50 dark:bg-slate-900/50 transition-colors">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">Precision Engineering</h2>
+            <p className="text-slate-500 dark:text-slate-400">Everything you need to outsmart the ATS and stand out.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { icon: <Shield className="text-blue-600" />, title: 'ATS Optimization', desc: 'Identify missing keywords and formatting issues that keep you from getting past robots.' },
+              { icon: <BarChart2 className="text-indigo-600" />, title: 'Skill Gap Matrix', desc: 'Visualize where your experience matches and where you need growth with high-res charts.' },
+              { icon: <Target className="text-purple-600" />, title: 'Direct Roadmap', desc: 'Recieve tailored courses and project ideas to bridge specific skill gaps in days.' }
+            ].map(f => (
+              <div key={f.title} className="p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl hover:border-blue-500 dark:hover:border-blue-400 transition-all group">
+                <div className="p-3 bg-slate-50 dark:bg-slate-950 w-fit rounded-2xl mb-6 group-hover:scale-110 transition-transform">{f.icon}</div>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{f.title}</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-24 px-4 bg-blue-600 dark:bg-blue-900">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 text-center text-white">
+          <div>
+            <div className="text-4xl md:text-5xl font-black mb-2">15k+</div>
+            <div className="text-xs uppercase font-bold text-blue-100">Users Monthly</div>
+          </div>
+          <div>
+            <div className="text-4xl md:text-5xl font-black mb-2">94%</div>
+            <div className="text-xs uppercase font-bold text-blue-100">Interview Rate</div>
+          </div>
+          <div>
+            <div className="text-4xl md:text-5xl font-black mb-2">200+</div>
+            <div className="text-xs uppercase font-bold text-blue-100">Top Companies</div>
+          </div>
+          <div>
+            <div className="text-4xl md:text-5xl font-black mb-2">10s</div>
+            <div className="text-xs uppercase font-bold text-blue-100">Avg. Analysis</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 border-t border-slate-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-2">
+            <div className="p-1 bg-blue-600 rounded">
+              <Zap className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-black text-slate-900 dark:text-white">SkillScan.AI</span>
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400">© 2026 SkillScan AI. All rights reserved.</p>
+          <div className="flex gap-6">
+            <span className="text-xs font-bold text-slate-500 hover:text-blue-600 cursor-pointer">Terms</span>
+            <span className="text-xs font-bold text-slate-500 hover:text-blue-600 cursor-pointer">Privacy</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  );
 };
 
 export default LandingPage;
