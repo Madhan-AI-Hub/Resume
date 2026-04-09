@@ -78,7 +78,7 @@ const UploadPage = () => {
               <Zap className="w-3 h-3" />
               <span>Version 2.5 Live</span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight leading-tight">
               Bridge the <span className="text-blue-600">Skill Gap</span> in Seconds.
             </h1>
             <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
@@ -106,7 +106,7 @@ const UploadPage = () => {
         </div>
 
         {/* Right Side: Form */}
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl transition-colors">
+        <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl transition-colors w-full">
           <form onSubmit={handleSubmit} className="space-y-8">
             
             {/* Resume Upload */}
@@ -125,7 +125,7 @@ const UploadPage = () => {
                   {resume ? (
                     <div className="flex items-center gap-3">
                       <FileText className="w-8 h-8 text-emerald-500" />
-                      <div className="max-w-[150px] overflow-hidden">
+                      <div className="max-w-[120px] sm:max-w-[150px] overflow-hidden">
                         <p className="text-sm font-bold truncate">{resume.name}</p>
                         <p className="text-[10px] text-slate-500 uppercase">File Ready</p>
                       </div>
