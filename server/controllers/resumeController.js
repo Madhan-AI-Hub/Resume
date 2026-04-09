@@ -102,7 +102,7 @@ exports.analyzeResume = async (req, res) => {
         let jdText = jdFile ? await extractText(jdFile) : jdTextRaw;
         jdText = (jdText || "").trim();
 
-        if (resumeText.length < 10) return res.status(400).json({ error: 'Resume content is empty or unreadable.' });
+        if (resumeText.length < 10) return res.status(400).json({ error: `Resume content is empty or unreadable. (Debug: Uploaded Size=${resumeFile.size} bytes, Type=${resumeFile.mimetype}, Found ${resumeText.length} chars). Ensure iCloud Drive has finished downloading the file.` });
         if (jdText.length < 10) return res.status(400).json({ error: 'Job description is too short.' });
 
         console.log("[NLP Engine] Running Vector Analysis...");
