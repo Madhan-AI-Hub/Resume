@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, FileText, X, AlertCircle, CheckCircle, Zap, Type, File } from 'lucide-react';
 import axios from 'axios';
+import API_BASE from '../config';
+
 
 const UploadPage = () => {
   const navigate = useNavigate();
@@ -51,18 +53,11 @@ const UploadPage = () => {
     }
 
     try {
-      // Fix for Mobile/Local/Production: 
-      // If we are in dev mode (port 5173), target port 5000 on the same machine.
-      // If we are in production, use relative paths.
-      const isDevelopment = window.location.port === '5173';
-      const API_URL = isDevelopment 
-        ? `http://${window.location.hostname}:5000/api/resume/analyze` 
-        : '/api/resume/analyze';
-      
-      const response = await axios.post(API_URL, formData);
-      navigate('/processing', { state: { results: response.data } }); // Go to processing first
+      const response = await axios.post(`${API_BASE}/analyze`, formData);
+      navigate('/processing', { state: { results: response.data } });
     } catch (err) {
-      setError(err.response?.data?.error || 'Analysis failed. Please try again.');
+      const msg = err.response?.data?.error || err.response?.data?.details || err.message || 'Analysis failed. Please try again.';
+      setError(msg);
       setLoading(false);
     }
   };

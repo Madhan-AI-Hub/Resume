@@ -1,225 +1,167 @@
-import React, { useEffect } from 'react';
-import { 
-    Box, Container, Typography, Paper, Chip, Stack, Button, 
-    CircularProgress, Divider, useTheme 
-} from '@mui/material';
-import { Grid } from '@mui/material';
+import React from 'react';
 import { motion } from 'framer-motion';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle';
-import MapIcon from '@mui/icons-material/Map';
-import DownloadIcon from '@mui/icons-material/Download';
-import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Navbar from './Navbar';
-
-const MotionPaper = motion(Paper);
-
-const ScoreHero = ({ score, summary }) => {
-    const theme = useTheme();
-    const navigate = useNavigate();
-    const location = useLocation();
-    
-    const getColor = () => {
-        if (score >= 80) return theme.palette.success.main;
-        if (score >= 50) return theme.palette.warning.main;
-        return theme.palette.error.main;
-    };
-
-    return (
-        <MotionPaper
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            sx={{
-                p: 5,
-                borderRadius: 6,
-                textAlign: 'center',
-                background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                position: 'relative',
-                overflow: 'hidden'
-            }}
-        >
-            <Box sx={{ position: 'relative', display: 'inline-flex', mb: 3 }}>
-                <CircularProgress
-                    variant="determinate"
-                    value={score}
-                    size={200}
-                    thickness={4}
-                    sx={{ color: getColor(), filter: `drop-shadow(0 0 10px ${getColor()}44)` }}
-                />
-                <Box sx={{
-                    top: 0, left: 0, bottom: 0, right: 0,
-                    position: 'absolute', display: 'flex',
-                    alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
-                }}>
-                    <Typography variant="h1" sx={{ fontWeight: 900, color: '#fff' }}>
-                        {score}
-                    </Typography>
-                    <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 'bold' }}>
-                        Alignment Index
-                    </Typography>
-                </Box>
-            </Box>
-            
-            <Typography variant="h4" fontWeight="800" sx={{ mb: 2 }}>
-                {score >= 80 ? "Premium Alignment" : score >= 50 ? "Balanced Match" : "Significant Variance"}
-            </Typography>
-            
-            <Paper sx={{ p: 2, mb: 4, bgcolor: 'rgba(255,255,255,0.03)', borderRadius: 3, border: '1px dashed rgba(255,255,255,0.1)' }}>
-                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic', lineHeight: 1.6 }}>
-                    "{summary}"
-                </Typography>
-            </Paper>
-
-            <Stack direction="column" spacing={2}>
-                <Button 
-                    variant="contained" 
-                    fullWidth 
-                    size="large"
-                    startIcon={<MapIcon />}
-                    onClick={() => navigate('/roadmap', { state: location.state })}
-                    sx={{ py: 1.5, fontWeight: 800, background: 'linear-gradient(45deg, #6366F1, #8B5CF6)' }}
-                >
-                    View Career Roadmap
-                </Button>
-                <Stack direction="row" spacing={2}>
-                    <Button variant="outlined" fullWidth startIcon={<DownloadIcon />}>
-                        PDF Report
-                    </Button>
-                    <Button variant="outlined" fullWidth startIcon={<AutoFixHighIcon />}>
-                        Optimize
-                    </Button>
-                </Stack>
-            </Stack>
-        </MotionPaper>
-    );
-};
-
-const SkillCategory = ({ title, skills, type, delay }) => {
-    const icons = {
-        match: <CheckCircleIcon sx={{ fontSize: 16, mr: 0.5 }} />,
-        missing: <ErrorOutlineIcon sx={{ fontSize: 16, mr: 0.5 }} />,
-        weak: <WarningAmberIcon sx={{ fontSize: 16, mr: 0.5 }} />
-    };
-    
-    const colors = {
-        match: 'success',
-        missing: 'error',
-        weak: 'warning'
-    };
-
-    return (
-        <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay }}
-        >
-            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 800, mb: 1, display: 'block', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                {title} ({skills.length})
-            </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 4 }}>
-                {skills.length > 0 ? skills.map((skill, i) => (
-                    <Chip 
-                        key={i} 
-                        label={skill} 
-                        size="small"
-                        color={colors[type]}
-                        icon={icons[type]}
-                        sx={{ 
-                            borderRadius: '8px', 
-                            fontWeight: 700,
-                            bgcolor: `rgba(${type === 'match' ? '16, 185, 129' : type === 'missing' ? '239, 68, 68' : '245, 158, 11'}, 0.1)`,
-                            border: '1px solid currentColor'
-                        }} 
-                    />
-                )) : (
-                    <Typography variant="body2" color="text.disabled">No indicators detected</Typography>
-                )}
-            </Box>
-        </motion.div>
-    );
-};
+import { CheckCircle, XCircle, AlertTriangle, Lightbulb, Map, Download, RefreshCcw, Zap } from 'lucide-react';
 
 const ResultsDashboard = () => {
-    const location = useLocation();
-    const navigate = useNavigate();
-    
-    const results = location.state?.results || location.state || {
-        score: 0,
-        summary: "Analysis pending.",
-        skills: { matched: [], missing: [], weak: [] },
-        suggestions: [],
-        roadmap: []
-    };
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!location.state) {
-            // navigate('/upload');
-        }
-    }, [location.state, navigate]);
+  const results = location.state?.results || location.state || {
+    score: 0,
+    overallScore: 0,
+    summary: 'Analysis pending.',
+    skills: { matched: [], missing: [], weak: [] },
+    suggestions: [],
+    roadmap: []
+  };
 
-    return (
-        <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', position: 'relative' }}>
-            <Navbar />
-            
-            {/* Background elements */}
-            <Box sx={{
-                position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-                background: 'radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.1) 0%, transparent 80%)',
-                zIndex: 0, pointerEvents: 'none'
-            }} />
+  const score = results.overallScore || results.score || 0;
+  const summary = results.aiInterpretation || results.summary || '';
+  const skills = results.skills || {};
+  const matched = skills.matched || skills.present || [];
+  const missing = skills.missing || [];
+  const weak = skills.weak || [];
+  const suggestions = results.suggestions || [];
 
-            <Container maxWidth="lg" sx={{ pt: 16, pb: 10, position: 'relative', zIndex: 1 }}>
-                <Grid container spacing={5}>
-                    {/* Left: Score Column */}
-                    <Grid item xs={12} md={5}>
-                        <ScoreHero score={results.score} summary={results.summary} />
-                    </Grid>
+  const getScoreColor = () => {
+    if (score >= 80) return { ring: '#10b981', text: 'text-emerald-500', label: 'Premium Alignment' };
+    if (score >= 50) return { ring: '#f59e0b', text: 'text-amber-500', label: 'Balanced Match' };
+    return { ring: '#ef4444', text: 'text-rose-500', label: 'Significant Variance' };
+  };
 
-                    {/* Right: Skills & Intelligence Column */}
-                    <Grid item xs={12} md={7}>
-                        <Stack spacing={4}>
-                            <Box>
-                                <Typography variant="h5" fontWeight="900" gutterBottom>
-                                    Intelligence Analysis
-                                </Typography>
-                                <Divider sx={{ mb: 3, opacity: 0.1 }} />
-                                <SkillCategory title="Matched Proficiencies" skills={results.skills.matched} type="match" delay={0.3} />
-                                <SkillCategory title="Critical Deficiencies" skills={results.skills.missing} type="missing" delay={0.4} />
-                                <SkillCategory title="Growth Opportunities" skills={results.skills.weak} type="weak" delay={0.5} />
-                            </Box>
+  const scoreStyle = getScoreColor();
+  const circumference = 2 * Math.PI * 88;
+  const offset = circumference - (circumference * score) / 100;
 
-                            <Box>
-                                <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-                                    <LightbulbCircleIcon color="warning" />
-                                    <Typography variant="h6" fontWeight="800">Optimization Strategies</Typography>
-                                </Stack>
-                                <Grid container spacing={2}>
-                                    {results.suggestions.map((s, i) => (
-                                        <Grid item xs={12} key={i}>
-                                            <Paper sx={{ 
-                                                p: 2, borderRadius: 3, bgcolor: 'rgba(255,255,255,0.02)',
-                                                border: '1px solid rgba(255,255,255,0.05)',
-                                                '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(99, 102, 241, 0.05)' },
-                                                transition: 'all 0.2s'
-                                            }}>
-                                                <Typography variant="subtitle2" fontWeight="bold" color="primary.light">{s.title}</Typography>
-                                                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>{s.desc}</Typography>
-                                            </Paper>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </Box>
-                        </Stack>
-                    </Grid>
-                </Grid>
-            </Container>
-        </Box>
-    );
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white transition-colors duration-300 pt-20 pb-16 px-4 md:px-8">
+      <div className="max-w-6xl mx-auto space-y-8">
+
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-black tracking-tight">Analysis Results</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">AI-powered skill gap analysis complete</p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate('/upload')}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+            >
+              <RefreshCcw className="w-4 h-4" /> Re-analyze
+            </button>
+            <button
+              onClick={() => navigate('/roadmap', { state: location.state })}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-indigo-500/20"
+            >
+              <Map className="w-4 h-4" /> View Roadmap
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+
+          {/* Score Hero */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+            className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 flex flex-col items-center text-center shadow-sm"
+          >
+            <div className="relative w-48 h-48 mb-6">
+              <svg className="w-full h-full -rotate-90">
+                <circle cx="96" cy="96" r="88" strokeWidth="10" stroke="currentColor" fill="transparent" className="text-slate-100 dark:text-slate-800" />
+                <circle
+                  cx="96" cy="96" r="88" strokeWidth="10" strokeDasharray={circumference}
+                  strokeDashoffset={offset} strokeLinecap="round" fill="transparent"
+                  stroke={scoreStyle.ring} className="transition-all duration-1000"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-5xl font-black">{score}</span>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Score</span>
+              </div>
+            </div>
+            <h2 className={`text-xl font-black mb-2 ${scoreStyle.text}`}>{scoreStyle.label}</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{summary}</p>
+            <div className="mt-6 flex gap-3 w-full">
+              <button
+                onClick={() => navigate('/report', { state: location.state })}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors"
+              >
+                <Zap className="w-4 h-4" /> Full Report
+              </button>
+              <button
+                onClick={() => window.print()}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold border border-slate-200 dark:border-slate-700 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              >
+                <Download className="w-4 h-4" /> PDF
+              </button>
+            </div>
+          </motion.div>
+
+          {/* Skills & Suggestions */}
+          <div className="lg:col-span-3 space-y-6">
+
+            {/* Skill Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[
+                { label: 'Matched Skills', skills: matched, color: 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30', icon: CheckCircle, iconColor: 'text-emerald-500' },
+                { label: 'Missing Skills', skills: missing, color: 'bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-400 border-rose-100 dark:border-rose-900/30', icon: XCircle, iconColor: 'text-rose-500' },
+                { label: 'Weak Skills', skills: weak, color: 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border-amber-100 dark:border-amber-900/30', icon: AlertTriangle, iconColor: 'text-amber-500' }
+              ].map(({ label, skills: list, color, icon: Icon, iconColor }) => (
+                <div key={label} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon className={`w-4 h-4 ${iconColor}`} />
+                    <span className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      {label} ({list.length})
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {list.length > 0 ? list.map((skill, i) => (
+                      <span key={i} className={`px-2 py-1 rounded-md text-[10px] font-bold border ${color}`}>{skill}</span>
+                    )) : (
+                      <span className="text-xs text-slate-400 dark:text-slate-500">None detected</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Suggestions */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="p-1.5 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                  <Lightbulb className="w-4 h-4 text-amber-500" />
+                </div>
+                <h3 className="text-sm font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">Optimization Strategies</h3>
+              </div>
+              {suggestions.length > 0 ? (
+                <div className="space-y-3">
+                  {suggestions.map((s, i) => (
+                    <motion.div
+                      key={i} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
+                      className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
+                    >
+                      {typeof s === 'string' ? (
+                        <p className="text-sm text-slate-600 dark:text-slate-300">{s}</p>
+                      ) : (
+                        <>
+                          <p className="text-sm font-bold text-blue-600 dark:text-blue-400">{s.title}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{s.desc || s.description}</p>
+                        </>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-slate-400 dark:text-slate-500">No specific suggestions generated.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ResultsDashboard;
