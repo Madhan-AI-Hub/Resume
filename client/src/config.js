@@ -1,3 +1,3 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/resume';
+const API_URL = 'https://resume-wgdf.onrender.com/api/resume';
 
 export default API_URL;
