@@ -11,10 +11,15 @@ const extractText = async (file) => {
     try {
         let text = '';
         const lowerName = file.originalname?.toLowerCase() || '';
-        if (file.mimetype === 'application/pdf' || lowerName.endsWith('.pdf')) {
+        
+        // Use Magic Bytes/Headers for robust mobile detection
+        const isPDF = file.mimetype === 'application/pdf' || lowerName.endsWith('.pdf') || (file.buffer && file.buffer.toString('utf8', 0, 5) === '%PDF-');
+        const isDocx = file.mimetype.includes('word') || lowerName.endsWith('.docx') || (file.buffer && file.buffer.toString('hex', 0, 4) === '504b0304');
+
+        if (isPDF) {
             const data = await pdf(file.buffer);
             text = data.text || '';
-        } else if (file.mimetype.includes('word') || lowerName.endsWith('.docx')) {
+        } else if (isDocx) {
             const result = await mammoth.extractRawText({ buffer: file.buffer });
             text = result.value || '';
         } else {
