@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, FileText, X, AlertCircle, CheckCircle, Zap, Type, File } from 'lucide-react';
 import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
 import API_BASE from '../config';
 
 
@@ -14,32 +15,55 @@ const UploadPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleFileChange = (e, setter) => {
+  const isFormValid = useMemo(() => {
+    const hasResume = !!resume;
+    const hasJD = jdMode === 'text' ? jdText.trim().length > 20 : !!jdFile;
+    return hasResume && hasJD;
+  }, [resume, jdMode, jdText, jdFile]);
+
+  const handleFileChange = (e, setter, isResume = false) => {
     const file = e.target.files[0];
-    const allowed = ['.pdf', '.docx', '.doc', '.txt'];
-    if (file) {
-      const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
-      if (allowed.includes(ext)) {
-        setter(file);
-        setError('');
-      } else {
-        setError('Invalid format. Please use PDF, DOCX, or TXT.');
-      }
+    if (!file) return;
+
+    if (file.size === 0) {
+      toast.error("Empty file detected. Please upload a valid document.");
+      return;
     }
+
+    const type = file.type;
+    const name = file.name.toLowerCase();
+    const isImage = type.startsWith('image/') || /\.(jpg|jpeg|png|gif)$/.test(name);
+    
+    if (isImage) {
+      toast.error("Images are not supported. Please upload PDF, DOC, or DOCX.");
+      return;
+    }
+
+    const allowedExtensions = isResume ? ['.pdf', '.docx', '.doc'] : ['.pdf', '.docx', '.doc', '.txt'];
+    const ext = name.slice(name.lastIndexOf('.'));
+
+    if (!allowedExtensions.includes(ext)) {
+      toast.error(`Invalid format. Please use ${allowedExtensions.join(', ').toUpperCase()}.`);
+      return;
+    }
+
+    setter(file);
+    setError('');
+    toast.success(`${isResume ? 'Resume' : 'Job Description'} uploaded successfully!`);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!resume) {
-      setError('Resume is required.');
+      toast.error('Resume is required.');
       return;
     }
-    if (jdMode === 'text' && !jdText.trim()) {
-      setError('Please provide a job description.');
+    if (jdMode === 'text' && jdText.trim().length < 20) {
+      toast.error('Please provide a more detailed job description.');
       return;
     }
     if (jdMode === 'file' && !jdFile) {
-      setError('Please upload a job description file.');
+      toast.error('Please upload a job description file.');
       return;
     }
 
@@ -58,12 +82,14 @@ const UploadPage = () => {
     } catch (err) {
       const msg = err.response?.data?.error || err.response?.data?.details || err.message || 'Analysis failed. Please try again.';
       setError(msg);
+      toast.error(msg);
       setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300 flex items-center justify-center p-4 md:p-8 pt-24 text-slate-900 dark:text-white">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         
         {/* Left Side: Instructions */}
@@ -71,21 +97,21 @@ const UploadPage = () => {
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold">
               <Zap className="w-3 h-3" />
-              <span>Version 2.5 Live</span>
+              <span>Version 3.0 Live - Advanced NLP</span>
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight leading-tight">
               Bridge the <span className="text-blue-600">Skill Gap</span> in Seconds.
             </h1>
             <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
-              Our advanced engine parses multiple file formats to give you the most accurate alignment report in the industry.
+              Our enhanced NLP engine provides real-time ATS compatibility scores and personalized learning roadmaps.
             </p>
           </div>
 
           <div className="space-y-4">
             {[
-              { t: 'Multi-Format Support', d: 'PDF, DOCX, and TXT are now fully supported.' },
-              { t: 'Dual JD Import', d: 'Paste text or upload the job posting document directly.' },
-              { t: 'Instant Roadmap', d: 'Get learning paths based on your specific missing skills.' }
+              { t: 'Strict Validation', d: 'Ensures your documents are parsed with 100% accuracy.' },
+              { t: 'Synonym Intelligence', d: 'Recognizes skill variants (e.g., React.js vs React).' },
+              { t: 'Interactive Roadmap', d: 'Wait for the report to see your phased learning path.' }
             ].map(item => (
               <div key={item.t} className="flex gap-4 items-start">
                 <div className="mt-1 p-1 bg-emerald-100 dark:bg-emerald-900/30 rounded-full">
@@ -106,12 +132,12 @@ const UploadPage = () => {
             
             {/* Resume Upload */}
             <div className="space-y-3">
-              <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">1. Your Resume</h3>
+              <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">1. Your Resume (PDF/DOCX)</h3>
               <div className="relative group">
                 <input 
                   type="file" 
-                  accept=".pdf,.docx,.doc,.txt" 
-                  onChange={(e) => handleFileChange(e, setResume)}
+                  accept=".pdf,.docx,.doc" 
+                  onChange={(e) => handleFileChange(e, setResume, true)}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                 />
                 <div className={`p-6 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center transition-all ${
@@ -131,7 +157,8 @@ const UploadPage = () => {
                   ) : (
                     <div className="text-center">
                       <Upload className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-                      <p className="text-xs font-bold">Upload Resume</p>
+                      <p className="text-xs font-bold text-slate-400">PDF, DOCX, or DOC only</p>
+                      <p className="text-[10px] text-slate-500 mt-1">Images will be rejected</p>
                     </div>
                   )}
                 </div>
@@ -162,7 +189,7 @@ const UploadPage = () => {
 
               {jdMode === 'text' ? (
                 <textarea 
-                  placeholder="Paste the job description or requirements here..."
+                  placeholder="Paste the job requirements (Min 20 chars)..."
                   value={jdText}
                   onChange={(e) => setJdText(e.target.value)}
                   className="w-full h-32 p-4 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500 outline-none resize-none text-slate-900 dark:text-white"
@@ -172,7 +199,7 @@ const UploadPage = () => {
                   <input 
                     type="file" 
                     accept=".pdf,.docx,.doc,.txt" 
-                    onChange={(e) => handleFileChange(e, setJdFile)}
+                    onChange={(e) => handleFileChange(e, setJdFile, false)}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   />
                   <div className={`p-6 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center transition-all ${
@@ -208,9 +235,11 @@ const UploadPage = () => {
 
             <button 
               type="submit"
-              disabled={loading}
+              disabled={loading || !isFormValid}
               className={`w-full py-4 rounded-2xl text-xs font-black text-white transition-all ${
-                loading ? 'bg-slate-400' : 'bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-500/20 active:scale-95'
+                loading || !isFormValid 
+                  ? 'bg-slate-300 dark:bg-slate-800 cursor-not-allowed text-slate-500' 
+                  : 'bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-500/20 active:scale-95'
               }`}
             >
               {loading ? 'Processing Intelligence...' : 'Analyze Match Compatibility'}

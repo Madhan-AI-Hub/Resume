@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { CheckCircle, Loader2, Search, Cpu, BarChart, FileText } from 'lucide-react';
+import { CheckCircle, Loader2, Search, Cpu, BarChart, FileText, AlertTriangle } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Zap = ({ className }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -10,31 +11,66 @@ const Zap = ({ className }) => (
 );
 
 const steps = [
-  { text: "Initializing Intelligence Engine...", icon: <Cpu className="w-5 h-5" /> },
-  { text: "Extracting Semantic Structure...", icon: <FileText className="w-5 h-5" /> },
-  { text: "Scanning JD Requirements...", icon: <Search className="w-5 h-5" /> },
-  { text: "Mapping Skill Compatibility...", icon: <BarChart className="w-5 h-5" /> },
-  { text: "Generating Career Roadmap...", icon: <Zap className="w-5 h-5" /> },
-  { text: "Finalizing Visual Report...", icon: <CheckCircle className="w-5 h-5" /> }
+  { text: "Extracting resume data...", icon: <FileText className="w-5 h-5" /> },
+  { text: "Parsing job description...", icon: <Search className="w-5 h-5" /> },
+  { text: "Comparing skill profiles...", icon: <Cpu className="w-5 h-5" /> },
+  { text: "Generating match report...", icon: <BarChart className="w-5 h-5" /> }
 ];
 
 const ProcessingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentStep, setCurrentStep] = useState(0);
+  const [timedOut, setTimedOut] = useState(false);
 
   useEffect(() => {
+    // 15s absolute timeout logic
+    const timeoutTimer = setTimeout(() => {
+      if (currentStep < steps.length) {
+        setTimedOut(true);
+        toast.error("Analysis is taking longer than expected. Please try again.");
+      }
+    }, 15000);
+
+    return () => clearTimeout(timeoutTimer);
+  }, [currentStep]);
+
+  useEffect(() => {
+    if (timedOut) return;
+
     if (currentStep < steps.length) {
       const timer = setTimeout(() => {
         setCurrentStep(prev => prev + 1);
-      }, 1500);
+      }, 2000);
       return () => clearTimeout(timer);
     } else {
       setTimeout(() => {
         navigate('/report', { state: location.state });
       }, 1000);
     }
-  }, [currentStep, navigate, location.state]);
+  }, [currentStep, navigate, location.state, timedOut]);
+
+  if (timedOut) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
+        <div className="bg-white dark:bg-slate-900 p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-md w-full space-y-6">
+          <div className="w-20 h-20 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto">
+            <AlertTriangle className="w-10 h-10 text-amber-600" />
+          </div>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white">Analysis Timeout</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">
+            Analysis is taking longer than expected. This could be due to connectivity issues or heavy file processing.
+          </p>
+          <button 
+            onClick={() => navigate('/upload')}
+            className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold shadow-lg shadow-blue-500/20 transition-all"
+          >
+            Go Back & Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 transition-colors duration-500 overflow-hidden">
